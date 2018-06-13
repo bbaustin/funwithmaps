@@ -42,7 +42,10 @@
         var iconBase = 'https://maps.google.com/mapfiles/kml/shapes/';
         var icons = iconBase + 'library_maps.png';
         var moreicons = iconBase + 'info-i_maps.png';
-      
+        var contentBox = "<h1>Hello World it me</h1>"
+        var infowindow = new google.maps.InfoWindow({
+          content: contentBox
+        });
 
         map.addListener('click', function(loc) {
           console.log('first');
@@ -55,6 +58,9 @@
             icon: moreicons,
             map: map
           });
+          marker.addListener('click', function() {
+            infowindow.open(map, marker);
+          })
         }
 
         //  setting a custom marker upon double clicking
@@ -71,6 +77,12 @@
             map: map
           });
         }
+
+
+
+
+
+
       }
 
 
