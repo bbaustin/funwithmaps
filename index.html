@@ -21,19 +21,72 @@
   <body>
     <div id="map"></div>
     <script>
-      var map;
-      function initMap() {
-        map = new google.maps.Map(document.getElementById('map'), {
-          center: {lat: 35.6895, lng: 139.6917},
-          zoom: 10
-        });
 
-        // placing a marker at a set location
-        // var marker = new google.maps.Marker({
-        //   position: {lat: 35.6895, lng: 139.6917},
-        //   map: map,
-        //   title: 'Hello World!'
-        // });
+
+
+
+      var map;
+      var tLat = 35.6895;
+      var tLng = 139.6917;
+      var pos;
+      var centWin;
+      var arr = [];
+
+      function getLocation() {
+        var save;
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(function(position) {
+            pos = {
+              lat: position.coords.latitude,
+              lng: position.coords.longitude
+            };
+
+            save = position.coords.latitude;
+            console.log(save);
+            /// I FORGET HOW TO RETURN STUFF. RIGHT NOW TRY TO RETURN POS
+            /// THEN TRY TO MAKE THE BUTTON BELOW SET A MARKER WHEN U HIT IT 
+         
+            centWin.setPosition(pos);
+            centWin.setContent('Location found.');
+            centWin.open(map);
+            map.setCenter(pos);
+            arr.push(position.coords.latitude, position.coords.longitude);
+            });
+          } else {
+          // Browser doesn't support Geolocation
+          handleLocationError(false, centWin, map.getCenter());
+          pos = {
+                    lat: tLat,
+                    lng: tLng
+                  };
+            console.log(62);
+        }
+      }
+
+      console.log(arr);
+
+      function initMap() {
+        getLocation();
+        map = new google.maps.Map(document.getElementById('map'), {
+          center: {lat: tLat, lng: tLng},
+          zoom: 14
+        });
+        centWin = new google.maps.InfoWindow;
+
+        // try to set center with geolocation, not set numbers.   DONE!  
+          
+
+      function handleLocationError(browserHasGeolocation, centWin, pos) {
+        centWin.setPosition(pos);
+        centWin.setContent(browserHasGeolocation ?
+                              'Error: The Geolocation service failed.' :
+                              'Error: Your browser doesn\'t support geolocation.');
+        centWin.open(map);
+      }
+
+
+
+
 
         /////////////////////////////////////
         // setting a marker upon clicking. //
@@ -76,7 +129,53 @@
             icon: icons,
             map: map
           });
+          console.log(latLng);
         }
+
+      function CenterControl(controlDiv, map) {
+
+        // Set CSS for the control border.
+        var controlUI = document.createElement('div');
+        controlUI.style.backgroundColor = '#fff';
+        controlUI.style.border = '2px solid #fff';
+        controlUI.style.borderRadius = '3px';
+        controlUI.style.boxShadow = '0 2px 6px rgba(0,0,0,.3)';
+        controlUI.style.cursor = 'pointer';
+        controlUI.style.marginBottom = '22px';
+        controlUI.style.textAlign = 'center';
+        controlUI.title = 'Click to recenter the map';
+        controlDiv.appendChild(controlUI);
+
+        // Set CSS for the control interior.
+        var controlText = document.createElement('div');
+        controlText.style.color = 'rgb(25,25,25)';
+        controlText.style.fontFamily = 'Roboto,Arial,sans-serif';
+        controlText.style.fontSize = '16px';
+        controlText.style.lineHeight = '38px';
+        controlText.style.paddingLeft = '5px';
+        controlText.style.paddingRight = '5px';
+        controlText.innerHTML = 'Center Map';
+        controlUI.appendChild(controlText);
+
+
+        controlUI.addEventListener('click', function() {
+          var myLatLng = {lat: arr[0], lng: arr[1]}; 
+          var marker = new google.maps.Marker({
+            position: myLatLng,
+            map: map,
+            title: 'Hello World!'
+          });
+          controlText.style.fontFamily = 'cursive';
+          console.log('hey');
+        });
+      }
+
+      var centerControlDiv = document.createElement('div');
+        var centerControl = new CenterControl(centerControlDiv, map);
+
+        centerControlDiv.index = 1;
+        map.controls[google.maps.ControlPosition.TOP_CENTER].push(centerControlDiv);
+
 
 
 
@@ -85,25 +184,6 @@
 
       }
 
-
-
-
-
-
-
-        ///////////////////////////////////////
-        // deleting a marker upon clicking. //
-        //////////////////////////////////////
-        // map.addListener('doubleclick', function(loc) {
-        //   deleteMarker(loc.latLng, map);
-        //   console.log('line45');
-        // })
-
-
-        // function deleteMarker(markymark) {
-        //   markymark.setMap(null);
-        //   console.log('yo?');
-        // }
     </script>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC9ZCZs0vIhzwbTbANlVL1rZIWV3LDfgsU&callback=initMap"
     async defer></script>
