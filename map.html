@@ -16,33 +16,9 @@
         margin: 0;
         padding: 0;
       }
-
-      #floaty {
-        position: fixed;
-        height: 400px;
-        width: 400px;
-        top: 10px;
-        left: 10px;
-        background-color: pink;
-        z-index: -10;
-      }
-
-      #fakeSubmit {
-        background-color: white;
-        border-radius: 10%;
-        display: inline-block;
-        padding: 10px;
-      }
     </style>
   </head>
   <body>
-    <div id="floaty">
-      <h1>Add parking spot</h1>
-      <form>
-        <input type="text" name="ok" value=""><p>yes</p>       
-        <div id="fakeSubmit" onclick="submission()">Submit</div>
-      </form>
-    </div>
     <div id="map"></div>
     <script>
 
@@ -112,7 +88,6 @@
   
         var iconBase = 'https://maps.google.com/mapfiles/kml/shapes/';
         var icons = iconBase + 'library_maps.png';
-        var floaty = document.getElementById('floaty');
         var moreicons = iconBase + 'info-i_maps.png';
         var contentBox = "<h1>Hello World it me</h1>"
         var infowindow = new google.maps.InfoWindow({
@@ -178,11 +153,19 @@
 
 
         controlUI.addEventListener('click', function() {
+          var myLatLng = {lat: arr[0], lng: arr[1]}; 
 
-          floaty.style.zIndex = 10;
           // make box pop up here with good or bad option 
           // optional picture update
           // later this will interface with db
+
+          var marker = new google.maps.Marker({
+            position: myLatLng,
+            map: map,
+            title: 'Hello World!'
+          });
+          console.log('hey');
+          console.log(myLatLng.lat);
 
         });
       }
@@ -194,41 +177,13 @@
         map.controls[google.maps.ControlPosition.TOP_CENTER].push(centerControlDiv);
 
 
-        document.getElementById('fakeSubmit').addEventListener('click', function() {
-          
-          floaty.style.zIndex = -10;
-        });
 
 
-        
+
+
 
       }
 
-      function submission() {
-          var iconBase = 'https://maps.google.com/mapfiles/kml/shapes/';
-          var icons = iconBase + 'library_maps.png';
-          var ok = document.getElementsByName('ok')[0];
-          console.log('ehlpme');
-          var myLatLng = {lat: arr[0], lng: arr[1]}; 
-          if (ok.value === "yes") {
-            var marker = new google.maps.Marker({
-              position: myLatLng,
-              map: map,
-              title: 'Hello World!'
-            });
-          } else if (ok.value === "no") {
-            var marker = new google.maps.Marker({
-              position: myLatLng,
-              icon: icons,
-              map: map,
-              title: 'Hello World!'
-            });
-          } else {
-            console.log('haha');
-          }
-
-
-        }
     </script>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC9ZCZs0vIhzwbTbANlVL1rZIWV3LDfgsU&callback=initMap"
     async defer></script>
